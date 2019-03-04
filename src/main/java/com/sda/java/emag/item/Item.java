@@ -13,7 +13,7 @@ public abstract class Item implements Displayable, Serializable {               
 
     private final String name;
     private float price;
-   private final Category category;
+    private final Category category;
     static final String SEPARATOR= " ";
 
 

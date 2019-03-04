@@ -2,6 +2,7 @@ package com.sda.java.emag;
 
 import com.sda.java.emag.businessLogic.Cart;
 import com.sda.java.emag.businessLogic.Stock;
+import com.sda.java.emag.item.Item;
 import com.sda.java.emag.item.Phone;
 import com.sda.java.emag.item.Shoes;
 
@@ -20,34 +21,45 @@ public class ApplicationEmag {
     private static final Integer size = 24;
     private static final String color = "blue";
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
 
         final Stock baneasaMall = new Stock(new HashMap<>());
         final Phone iphoneX = new Phone(PHONE_NAME, PRICE, BRAND, DISPLAY_SIZE, CPU);
 
         final int supply_quantity = 5;
-        final int consume_quantity=2;
-        final int currentIphoneStock=baneasaMall.addItem(iphoneX,supply_quantity);
-        final Shoes nike = new Shoes("nike",PRICE,brand,size,color);
-        final String showStock1=baneasaMall.showItems();
+        final int consume_quantity = 2;
+        final int currentIphoneStock = baneasaMall.addItem(iphoneX, supply_quantity);
+        final Shoes nike = new Shoes("nike", PRICE, brand, size, color);
+        final String showStock1 = baneasaMall.showItems();
         final Cart cart = new Cart(new HashMap<>());
 
-        int retrieveIphoneQuantity=baneasaMall.retrieveItem(iphoneX, consume_quantity);
-        System.out.println("Initially Iphone X stock quantity is "+ currentIphoneStock);
+        int retrieveIphoneQuantity = baneasaMall.retrieveItem(iphoneX, consume_quantity);
+        System.out.println("Initially Iphone X stock quantity is " + currentIphoneStock);
         System.out.println("Remained iphone x quantity is " + retrieveIphoneQuantity);
-        retrieveIphoneQuantity=baneasaMall.retrieveItem(iphoneX, consume_quantity);
+        retrieveIphoneQuantity = baneasaMall.retrieveItem(iphoneX, consume_quantity);
         System.out.println("Remained (2)  iphone x quantity is " + retrieveIphoneQuantity);
-        retrieveIphoneQuantity=baneasaMall.retrieveItem(iphoneX, consume_quantity);
+        retrieveIphoneQuantity = baneasaMall.retrieveItem(iphoneX, consume_quantity);
         System.out.println("Remained (3)iphone x quantity is " + retrieveIphoneQuantity);
 
         System.out.println(cart.getCurrentItems());
 
-        cart.addCartItem(iphoneX,20);
-        cart.addCartItem(nike,100);
+        cart.addCartItem(iphoneX, 20);
+        cart.addCartItem(nike, 100);
         cart.print();
-//        baneasaMall.saveState();
+        baneasaMall.saveState();
         baneasaMall.loadState();
 
-    }
+        //to test runnable:
+        final CartController cartController = new CartController(baneasaMall);
+        final User user1 = new User(cartController, iphoneX, 100000);
+        final User user2 = new User(cartController, iphoneX, 100000);
+        Thread userThread1 = new Thread(user1);
+        Thread userThread2 = new Thread(user2);
+            userThread1.start();
+            userThread2.start();
+            userThread1.join();
+            userThread2.join();
 
+
+    }
 }
